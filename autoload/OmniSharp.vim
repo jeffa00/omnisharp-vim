@@ -23,12 +23,20 @@ function! OmniSharp#Complete(findstart, base) abort
 
     return start
   else
-    return pyeval('Completion().get_completions("s:column", "a:base")')
+    if has('python3')
+        return py3eval('Completion().get_completions("s:column", "a:base")')
+    else
+        return pyeval('Completion().get_completions("s:column", "a:base")')
+    endif
   endif
 endfunction
 
 function! OmniSharp#FindUsages() abort
-  let qf_taglist = pyeval('findUsages()')
+  if has('python3')
+      let qf_taglist = py3eval('findUsages()')
+  else
+      let qf_taglist = pyeval('findUsages()')
+  endif
 
   " Place the tags in the quickfix window, if possible
   if len(qf_taglist) > 0
@@ -40,7 +48,11 @@ function! OmniSharp#FindUsages() abort
 endfunction
 
 function! OmniSharp#FindImplementations() abort
-  let qf_taglist = pyeval('findImplementations()')
+  if has('python3')
+      let qf_taglist = py3eval('findImplementations()')
+  else
+      let qf_taglist = pyeval('findImplementations()')
+  endif
 
   if len(qf_taglist) == 0
     echo 'No implementations found'
@@ -58,7 +70,11 @@ function! OmniSharp#FindImplementations() abort
 endfunction
 
 function! OmniSharp#FindMembers() abort
-  let qf_taglist = pyeval('findMembers()')
+    if has('python3')
+        let qf_taglist = py3eval('findMembers()')
+    else
+        let qf_taglist = pyeval('findMembers()')
+  endif
 
   " Place the tags in the quickfix window, if possible
   if len(qf_taglist) > 1
@@ -69,10 +85,18 @@ endfunction
 
 function! OmniSharp#NavigateUp() abort
   if g:OmniSharp_server_type == 'roslyn'
-    let qf_tag = pyeval("navigateUp()")
+    if has('python3')
+        let qf_tag = py3eval("navigateUp()")
+    else
+        let qf_tag = pyeval("navigateUp()")
+    endif
     call cursor(qf_tag.Line, qf_tag.Column)
   else
-    let qf_taglist = pyeval('findMembers()')
+    if has('python3')
+        let qf_taglist = py3eval('findMembers()')
+    else
+        let qf_taglist = pyeval('findMembers()')
+    endif
     let column = col('.')
     let line = line('.')
     let l = len(qf_taglist) - 1
@@ -93,10 +117,18 @@ endfunction
 
 function! OmniSharp#NavigateDown() abort
   if g:OmniSharp_server_type == 'roslyn'
-    let qf_tag = pyeval("navigateDown()")
+    if has('python3')
+        let qf_tag = py3eval("navigateDown()")
+    else
+        let qf_tag = pyeval("navigateDown()")
+    endif
     call cursor(qf_tag.Line, qf_tag.Column)
   else
-    let qf_taglist = pyeval('findMembers()')
+    if has('python3')
+        let qf_taglist = py3eval('findMembers()')
+    else
+        let qf_taglist = pyeval('findMembers()')
+    endif
     let column = col('.')
     let line = line('.')
     for l in range(0, len(qf_taglist) - 1)
@@ -150,7 +182,11 @@ function! OmniSharp#GetCodeActions(mode) range abort
     let context = {'empty': 0, 'auto_resize': 1}
     call unite#start([['OmniSharp/findcodeactions', a:mode]], context)
   elseif g:OmniSharp_selector_ui ==? 'ctrlp'
-    let actions = pyeval(printf('getCodeActions(%s)', string(a:mode)))
+    if has('python3')
+        let actions = py3eval(printf('getCodeActions(%s)', string(a:mode)))
+    else
+        let actions = pyeval(printf('getCodeActions(%s)', string(a:mode)))
+    endif
     if empty(actions)
       echo 'No code actions found'
       return
@@ -167,7 +203,11 @@ function! OmniSharp#GetIssues() abort
     return get(b:, 'issues', [])
   endif
   if g:serverSeenRunning == 1
-    let b:issues = pyeval('getCodeIssues()')
+    if has('python3')
+        let b:issues = py3eval('getCodeIssues()')
+    else
+        let b:issues = pyeval('getCodeIssues()')
+    endif
   endif
   return get(b:, 'issues', [])
 endfunction
@@ -184,7 +224,11 @@ function! OmniSharp#FindSyntaxErrors() abort
     return []
   endif
   if g:serverSeenRunning == 1
-    let b:syntaxerrors = pyeval('findSyntaxErrors()')
+    if has('python3')
+        let b:syntaxerrors = py3eval('findSyntaxErrors()')
+    else
+        let b:syntaxerrors = pyeval('findSyntaxErrors()')
+    endif
   endif
   return get(b:, 'syntaxerrors', [])
 endfunction
@@ -197,7 +241,11 @@ function! OmniSharp#FindSemanticErrors() abort
     return []
   endif
   if g:serverSeenRunning == 1
-    let b:semanticerrors = pyeval('findSemanticErrors()')
+    if has('python3')
+        let b:semanticerrors = py3eval('findSemanticErrors()')
+    else
+        let b:semanticerrors = pyeval('findSemanticErrors()')
+    endif
   endif
   return get(b:, 'semanticerrors', [])
 endfunction
@@ -210,7 +258,11 @@ function! OmniSharp#CodeCheck() abort
     return []
   endif
   if g:serverSeenRunning == 1
-    let b:codecheck = pyeval('codeCheck()')
+    if has('python3')
+        let b:codecheck = py3eval('codeCheck()')
+    else
+        let b:codecheck = pyeval('codeCheck()')
+    endif
   endif
   return get(b:, 'codecheck', [])
 endfunction
@@ -293,7 +345,11 @@ function! OmniSharp#RenameTo(renameto) abort
 endfunction
 
 function! OmniSharp#Build() abort
-  let qf_taglist = pyeval('build()')
+    if has('python3')
+        let qf_taglist = py3eval('build()')
+  else
+      let qf_taglist = pyeval('build()')
+  endif
 
   " Place the tags in the quickfix window, if possible
   if len(qf_taglist) > 0
@@ -384,7 +440,11 @@ function! OmniSharp#CodeFormat() abort
 endfunction
 
 function! OmniSharp#FixUsings() abort
-  let qf_taglist = pyeval('fix_usings()')
+    if has('python3')
+        let qf_taglist = py3eval('fix_usings()')
+  else
+      let qf_taglist = pyeval('fix_usings()')
+  endif
 
   if len(qf_taglist) > 0
     call setqflist(qf_taglist)

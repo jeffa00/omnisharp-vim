@@ -55,7 +55,11 @@ function! ctrlp#OmniSharp#findtype#init() abort
     return
   endif
 
-  let s:quickfixes = pyeval('findTypes()')
+  if has('python3')
+    let s:quickfixes = py3eval('findTypes()')
+  else
+    let s:quickfixes = pyeval('findTypes()')
+  endif
   let types = []
   for quickfix in s:quickfixes
     call add(types, quickfix.text)

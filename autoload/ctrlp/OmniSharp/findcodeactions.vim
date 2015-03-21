@@ -72,7 +72,11 @@ endfunction
 function! ctrlp#OmniSharp#findcodeactions#accept(mode, str) abort
   call ctrlp#exit()
   let action = index(s:actions, a:str)
-  call pyeval(printf('runCodeAction(%s, %d)', string(s:mode), action))
+  if has('python3')
+    call py3eval(printf('runCodeAction(%s, %d)', string(s:mode), action))
+  else
+    call pyeval(printf('runCodeAction(%s, %d)', string(s:mode), action))
+  endif
 endfunction
 
 " Give the extension an ID

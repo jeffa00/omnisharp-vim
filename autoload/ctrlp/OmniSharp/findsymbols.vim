@@ -56,7 +56,11 @@ function! ctrlp#OmniSharp#findsymbols#init() abort
     return
   endif
 
-  let s:quickfixes = pyeval('findSymbols()')
+  if has('python3')
+    let s:quickfixes = py3eval('findSymbols()')
+  else
+    let s:quickfixes = pyeval('findSymbols()')
+  endif
   let symbols = []
   for quickfix in s:quickfixes
     call add(symbols, quickfix.text)

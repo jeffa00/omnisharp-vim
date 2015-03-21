@@ -6,10 +6,16 @@ let g:OmniSharp_loaded = 1
 
 "Load python/OmniSharp.py
 let s:py_path = join([expand('<sfile>:p:h:h'), 'python'], '/')
-exec "python sys.path.append(r'" . s:py_path . "')"
-exec 'pyfile ' . fnameescape(s:py_path . '/Completion.py')
-exec 'pyfile ' . fnameescape(s:py_path . '/OmniSharp.py')
 
+if has('python3')
+    exec "python3 sys.path.append(r'" . s:py_path . "')"
+    exec 'py3file ' . fnameescape(s:py_path . '/Completion3.py')
+    exec 'py3file ' . fnameescape(s:py_path . '/OmniSharp3.py')
+else
+    exec "python sys.path.append(r'" . s:py_path . "')"
+    exec 'pyfile ' . fnameescape(s:py_path . '/Completion.py')
+    exec 'pyfile ' . fnameescape(s:py_path . '/OmniSharp.py')
+endif
 
 let g:OmniSharp_port = get(g:, 'OmniSharp_port', 2000)
 
